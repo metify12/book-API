@@ -52,6 +52,9 @@ MONGO_URI=mongodb://localhost:27017/bookdb
 
 5. Test the API using **Postman** or any other API client.
 
+Github: [https://github.com/metify12/book-API.git]
+Render: [https://book-api-2-xtwk.onrender.com]
+
 <!-- RUN INSTRUCTIONS -->
 Start the server:
 The server is started with **npm start** because I have a start script in my package.json file.  
