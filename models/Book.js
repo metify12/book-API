@@ -5,6 +5,7 @@ const bookSchema = new mongoose.Schema({
     author: { type: String, required: true },
     genre: { 
         type: String, 
+     required: true,
         enum: ['Comedy', 'Romance', 'Tragedy', 'Horror'], 
     }
 });

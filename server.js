@@ -1,78 +1,3 @@
-// require('dotenv').config();
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const bodyParser = require('body-parser');
-// const cors = require('cors');
-// const bookRoutes = require('./routes/books');
-
-// const app = express();
-
-// // Middleware
-// app.use(bodyParser.json());
-// app.use(cors());
-
-// // Routes
-// app.use('/books', bookRoutes);
-
-// // Connect to MongoDB
-// const connectDB = async () => {
-//     try {
-//         await mongoose.connect(process.env.MONGO_URI, {
-//             useNewUrlParser: true,
-//             useUnifiedTopology: true,
-//         });
-//         console.log('Connected to MongoDB');
-//     } catch (err) {
-//         console.error('Could not connect to MongoDB:', err.message);
-//         process.exit(1); // Exit with failure
-//     }
-// };
-
-// connectDB();
-
-// // Start Server
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// require('dotenv').config(); // Load environment variables from .env file
-// const express = require('express');
-// const mongoose = require('mongoose');
-
-// const app = express();
-
-// // Middleware for parsing JSON
-// app.use(express.json());
-
-// // Debug log for server start
-// console.log('Server is starting...');
-
-// // Connect to MongoDB
-// const mongoUri = process.env.MONGO_URI;
-// console.log('Connecting to MongoDB with URI:', mongoUri);
-
-// mongoose
-//   .connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('Connected to MongoDB successfully'))
-//   .catch((err) => {
-//     console.error('Could not connect to MongoDB:', err);
-//     process.exit(1); // Exit process if DB connection fails
-//   });
-
-// // Define routes
-// app.get('/', (req, res) => {
-//   res.send('Welcome to the Book API!');
-// });
-// app.post('/books', (req, res) => {
-//     const { title, author } = req.body;
-//     res.json({ message: `Book titled "${title}" by ${author} added successfully!` });
-//   });
-  
-
-// // Start the server
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
 
 require('dotenv').config(); // Load environment variables from .env file
 const express = require('express');
@@ -127,8 +52,8 @@ app.get('/books/:id', async (req, res) => {
 
 // 3. POST /books
 app.post('/books', async (req, res) => {
-  const { title, author } = req.body;
-  const newBook = new Book({ title, author });
+  const { title, author, genre } = req.body;
+  const newBook = new Book({ title, author, genre });
 
   try {
     const savedBook = await newBook.save();
