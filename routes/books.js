@@ -11,18 +11,18 @@ const {
 const router = express.Router();
 
 // Route to create a new book
-router.post("/api/books/create", createBook);
+router.post("/create", createBook);
 
 // Route to get a particular book
-router.get('/api/books/:id', getBookById);
+router.get('/:id', getBookById);
 
 // Route to get all books
-router.get("/api/books/get", getAllBooks);
+router.get("/get", getAllBooks);
 
 // Route to edit a book by ID
-router.put("/api/books/:id", editBook);
+router.put("/:id", editBook);
 
 // Route to delete a book by ID
-router.delete("/api/books/:id", deleteBook);
+router.delete("/:id", deleteBook);
 
 module.exports = router;
