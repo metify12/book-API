@@ -1,55 +1,28 @@
-const express = require('express');
+const express = require("express");
+
+const {
+  createBook,
+  getBookById,
+  getAllBooks,
+  editBook,
+  deleteBook,
+} = require("../controllers/bookController");
+
 const router = express.Router();
-const Book = require('../models/book');
 
-// GET /books
-router.get('/', async (req, res) => {
-    const books = await Book.find();
-    res.json(books);
-});
+// Route to create a new book
+router.post("/create", createBook);
 
-// GET /books/:id
-router.get('/:id', async (req, res) => {
-    try {
-        const book = await Book.findById(req.params.id);
-        if (!book) return res.status(404).send('Book not found');
-        res.json(book);
-    } catch (err) {
-        res.status(400).send('Invalid ID');
-    }
-});
+// Route to get a particular book
+router.get('/:id', getBookById);
 
-// POST /books
-router.post('/', async (req, res) => {
-    try {
-        const book = new Book(req.body);
-        await book.save();
-        res.status(201).json(book);
-    } catch (err) {
-        res.status(400).send(err.message);
-    }
-});
+// Route to get all books
+router.get("/get", getAllBooks);
 
-// PUT /books/:id
-router.put('/:id', async (req, res) => {
-    try {
-        const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!book) return res.status(404).send('Book not found');
-        res.json(book);
-    } catch (err) {
-        res.status(400).send('Invalid ID or data');
-    }
-});
+// Route to edit a book by ID
+router.put("/:id", editBook);
 
-// DELETE /books/:id
-router.delete('/:id', async (req, res) => {
-    try {
-        const book = await Book.findByIdAndDelete(req.params.id);
-        if (!book) return res.status(404).send('Book not found');
-        res.json({ message: 'Book deleted' });
-    } catch (err) {
-        res.status(400).send('Invalid ID');
-    }
-});
+// Route to delete a book by ID
+router.delete("/:id", deleteBook);
 
 module.exports = router;

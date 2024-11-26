@@ -1,128 +1,41 @@
-require('dotenv').config(); // Load environment variables from .env file
-const express = require('express');
-const mongoose = require('mongoose');
-const Book = require('./models/book'); // Import the Book model
+require("dotenv").config(); // Load environment variables
+const express = require("express"); // Import express
+const mongoose = require("mongoose"); // Import mongoose
+const cors = require("cors"); // Import cors for cross-origin requests
 
 const app = express();
+const port = process.env.PORT || 5000; // Set the port from environment variables or default to 5000
 
-// Middleware for parsing JSON
-app.use(express.json());
+// Middleware
+app.use(cors()); // Allow cross-origin requests
+app.use(express.json()); // Parse incoming JSON data
 
-// Debug log for server start
-console.log('Server is starting...');
-console.log('Connecting to MongoDB with URI:', process.env.MONGO_URI);
+// Import routes
+const bookRouter = require("./routes/books"); // Book routes
+const notFound = require("./middlewares/notFound"); // 404 handler middleware
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB successfully'))
-  .catch((err) => {
-    console.error('Could not connect to MongoDB:', err);
-    process.exit(1); // Exit process if DB connection fails
-  });
+// Use routes
+app.use("/api/books", bookRouter); // Books API route
+app.use(notFound); // 404 handler
 
-// Endpoints
-app.get('/', (req, res) => {
-  res.send('Welcome to the Book API!');
-});
-
-// 1. GET /books
-app.get('/books', async (req, res) => {
+// Start the server and connect to MongoDB
+const start = async () => {
   try {
-    const books = await Book.find(); // Find all books
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving books', error: err });
-  }
-});
-
-// 2. GET /books/:id
-app.get('/books/:id', async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id); // Find book by ID
-    if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
-    res.json(book);
-  } catch (err) {
-    res.status(500).json({ message: 'Error retrieving book', error: err });
-  }
-});
-
-// 3. POST /books
-app.post('/books', async (req, res) => {
-  const { title, author, genre } = req.body;
-  const newBook = new Book({ title, author, genre });
-
-  try {
-    const savedBook = await newBook.save();
-    res.status(201).json(savedBook);
-  } catch (err) {
-    res.status(500).json({ message: 'Error saving book', error: err });
-  }
-});
-
-// 4. PUT /books/:id
-// PUT /books/:id: Update an existing book by ID
-app.put('/books/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updateData = req.body;
-
-    const updatedBook = await Book.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
+    // Connect to MongoDB 
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
+    console.log("DB Connected!");
 
-    if (!updatedBook) {
-      return res.status(404).json({ message: `Book with ID ${id} not found` });
-    }
-
-    res.status(200).json({
-      message: 'Book updated successfully',
-      book: updatedBook,
+    // Start the server on the specified port
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
     });
   } catch (error) {
-    if (error.kind === 'ObjectId') {
-      return res.status(400).json({ message: `Invalid book ID format: ${req.params.id}` });
-    }
-    res.status(500).json({ message: 'Error updating book', error });
+    console.error("Database connection failed:", error);
   }
-});
+};
 
-//  Delete a book by ID
-app.delete('/books/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Validate the ID format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: `Invalid book ID format: ${id}` });
-    }
-
-    // Attempt to delete the book
-    const deletedBook = await Book.findByIdAndDelete(id);
-
-    if (!deletedBook) {
-      return res.status(404).json({ message: `Book with ID ${id} not found` });
-    }
-
-    res.json({
-      message: `Book with ID ${id} deleted successfully`,
-      book: deletedBook,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Error deleting book',
-      error: error.message,
-    });
-  }
-});
-
-
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+start(); // Run the start function to initiate the connection and server
 
