@@ -13,11 +13,11 @@ const router = express.Router();
 // Route to create a new book
 router.post("/create", createBook);
 
-// Route to get a particular book
-router.get('/:id', getBookById);
-
 // Route to get all books
 router.get("/get", getAllBooks);
+
+// Route to get a particular book
+router.get('/:id', getBookById);
 
 // Route to edit a book by ID
 router.put("/:id", editBook);

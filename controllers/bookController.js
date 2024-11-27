@@ -86,7 +86,7 @@ const deleteBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: `No Book with ID: ${id}` });
     }
-    res.status(200).json({ message: "Book Deleted Successfully", deletedBook: book });
+    res.status(200).json({ message: "Book Deleted Successfully"});
   } catch (error) {
     res.status(500).json({ message: "Error deleting book", error: error.message });
   }
